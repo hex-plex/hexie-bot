@@ -5,9 +5,11 @@ module.exports = (app) => {
     await context.github.issues.createComment(issueComment);
   });
   app.on('issue_comment.created',async (context) => {
-    const issueComment = context.issue({ body: 'Thanks for the insight'});
-    app.log.info(context);
-    await context.github.issues.createComment(issueComment);
+    if(context.sender.type != "Bot"){
+      const issueComment = context.issue({ body: 'Thanks for the insight'});
+      app.log.info(context);
+      await context.github.issues.createComment(issueComment);
+    }
   });
   const router = app.route('/my-app');
   router.use(require('express').static('public'));
