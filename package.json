@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "probot run ./lib/index.js",
+    "start": "probot run ./src/index.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -29,7 +29,7 @@
     "eslint-plugin-typescript": "^0.14.0",
     "jest": "^26.4.0",
     "nock": "^13.0.4",
-    "smee-client": "^1.1.0",
+    "smee-client": "^1.2.2",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
   },
