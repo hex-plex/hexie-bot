@@ -53,6 +53,20 @@ module.exports = (app) => {
     });
   }
 
+  const closeIssue = async function (issue, app, issueId) {
+    const github = await app.auth(12536268); // Insert Installation ID here
+    const owner = issue.owner;
+    const repo = issue.repo;
+    const state = issue.state;
+    return await github.issues.update({
+      owner: owner,
+      repo: repo,
+      issue_number: issueId,
+      state: state,
+    });
+
+  }
+
   router.post('/Issue', (req,res) => {
     const password = req.headers.authentication;
     if(password === process.env.PASSWORD){
@@ -88,6 +102,26 @@ module.exports = (app) => {
         // assignees: req.query.as
       }
       updateIssue(issue, app, issueId).then(
+        res.send('Success')
+      ).catch(err => console.log(err))
+      app.log.info({body:"Worked"});
+    }
+  });
+  
+  router.delete('/Issue/:id/', (req, res) => {
+    const password = req.headers.authentication;
+    if(password === process.env.PASSWORD){
+      // Should edit the main issue comment
+      const issueId = req.params.id;
+      const issue = {
+        owner: 'Vikhyath08',
+        repo: 'solid-octo-spoon',
+        state: req.body.state,
+        // labels: req.query.labels,
+        // body: req.query.body,
+        // assignees: req.query.as
+      }
+      closeIssue(issue, app, issueId).then(
         res.send('Success')
       ).catch(err => console.log(err))
       app.log.info({body:"Worked"});
