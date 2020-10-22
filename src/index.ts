@@ -1,10 +1,15 @@
+const axios = require('axios');
+
 module.exports = (app) => {
   app.on('issues.opened', async (context) => {
-    if(context.payload.sender.type != "Bot"){
     const issueComment = context.issue({ body: 'Thanks for opening this issue!' });
     app.log.info(context);
+    const data = context.issue;
+    const headers = {'authorization':process.env.PASSWORD};
+    const telegram_bot_link = process.env.TELEGRAM_BOT_LINK;
+    const response = await axios.get(telegram_bot_link,{headers:headers});
+    //app.log.info(response);
     await context.github.issues.createComment(issueComment);
-    }
   });
   app.on('issue_comment.created',async (context) => {
     app.log.info(context);
