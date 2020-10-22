@@ -12,7 +12,10 @@ module.exports = (app) => {
     await context.github.issues.createComment(issueComment);
   });
   app.on('issue_comment.created',async (context) => {
+<<<<<<< HEAD
     app.log.info(context);
+=======
+>>>>>>> master
     if(context.payload.sender.type != "Bot"){
       const issueComment = context.issue({ body: 'Thanks for the insight'});
       await context.github.issues.createComment(issueComment);
