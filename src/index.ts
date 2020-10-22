@@ -111,7 +111,7 @@ module.exports = (app) => {
   router.delete('/Issue/:id/', (req, res) => {
     const password = req.headers.authentication;
     if(password === process.env.PASSWORD){
-      Should edit the main issue comment
+      // Should edit the main issue comment
       const issueId = req.params.id;
       const issue = {
         owner: 'Vikhyath08',
