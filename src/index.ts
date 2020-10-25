@@ -1,15 +1,16 @@
 const axios = require('axios');
+const commands = require('probot-commands')
 
 module.exports = (app) => {
   app.on('issues.opened', async (context) => {
     if(context.payload.sender.type != "Bot"){
     const issueComment = context.issue({ body: 'Thanks for opening this issue!' });
     //app.log.info(context);
-    const data = context.issue;
-    const headers = {'authorization':process.env.PASSWORD};
-    const telegram_bot_link = process.env.TELEGRAM_BOT_LINK;
-    const response = await axios.get(telegram_bot_link,{headers:headers});
-    //app.log.info(response);
+    // const data = context.issue;
+    // const headers = {'authorization':process.env.PASSWORD};
+    // const telegram_bot_link = process.env.TELEGRAM_BOT_LINK;
+    // const response = await axios.get(telegram_bot_link,{headers:headers});
+    // app.log.info(response);
     await context.github.issues.createComment(issueComment);
     }
   });
@@ -102,14 +103,21 @@ module.exports = (app) => {
     const password = req.headers.authentication;
     if(password === process.env.PASSWORD){
       // Do body preprocessing here
-      let actualBody = 'By: @' + req.body.author + '\n\n**BODY**\n' + req.body.Body + '\n\n**DIFFICULTY**\n';
-      actualBody += (parseInt(req.body.Difficulty) == 0) ? 'Beginner' : (parseInt(req.body.Difficulty) == 1) ? 'Intermediate' : 'Advanced';
-      actualBody += '\n### Note\n The time and venue will be decided in the Telegram group, so make sure you\'ve joined up the group.'
+      let actualBody = 'By: @' + req.body.author;
+      actualBody += '\n\n**Abstract**\n' + (req.body.abstract == undefined ? '(No Abstract)' : req.body.abstract);
+      actualBody += '\n\n**Topics Covered**\n' + (req.body.topics == undefined ? '(No Topic Provided)' :req.body.topics);
+      actualBody += '\n\n**Expected Duration**\n' + (req.body.duration == undefined ? '(No Duration Provided)' : req.body.duration);
+      actualBody += '\n\n**Difficulty**\n';
+      actualBody += (parseInt(req.body.difficulty) == 0) ? 'Beginner' : (parseInt(req.body.difficulty) == 1) ? 'Intermediate' : 'Advanced';
+      actualBody += '\n\n**Pre-Requisites**\n' + (req.body.prereq == undefined ? '(No Pre-Requisites Provided)' : req.body.prereq);
+      actualBody += '\n\n**Resources**\n' + (req.body.resources == undefined ? '(No Resources Provided)' : req.body.resources);
+      actualBody += '\n\n**Content**\n' + (req.body.content == undefined ? '(No Content Provided)' : req.body.content);
+      actualBody += '\n\n### Note\n The time and venue will be decided in the Telegram group, so make sure you\'ve joined it.'
       console.log(actualBody);
       const issue = {
         owner: 'Vikhyath08',
         repo: 'solid-octo-spoon',
-        title: req.body.Title,
+        title: req.body.title,
         body: actualBody,
         // labels: req.query.labels,
         // assignees: req.query.as
@@ -118,6 +126,7 @@ module.exports = (app) => {
         res.status(200).send('Success')
       ).catch(err => console.log(err))
       app.log.info({body:"Worked"});
+
     }
     else{
       res.status(200).send('Invalid Password!');
