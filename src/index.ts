@@ -25,7 +25,7 @@ module.exports = (app) => {
   });
 
   const createIssue = async function (issue, app) {
-    const github = await app.auth(12536268); // Insert Installation ID here
+    const github = await app.auth(process.env.INSTALLATION_ID); // Insert Installation ID here
     const owner = issue.owner;
     const repo = issue.repo;
     const title = issue.title;
@@ -37,9 +37,9 @@ module.exports = (app) => {
       title: title,
     });
   }
-  
+
   const updateIssue = async function (issue, app, issueId) {
-    const github = await app.auth(12536268); // Insert Installation ID here
+    const github = await app.auth(process.env.INSTALLATION_ID); // Insert Installation ID here
     const owner = issue.owner;
     const repo = issue.repo;
     const title = issue.title;
