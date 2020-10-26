@@ -5,12 +5,10 @@ module.exports = (app) => {
   app.on('issues.opened', async (context) => {
     if(context.payload.sender.type != "Bot"){
     const issueComment = context.issue({ body: 'Thanks for opening this issue!' });
-    //app.log.info(context);
-    // const data = context.issue;
-    // const headers = {'authorization':process.env.PASSWORD};
-    // const telegram_bot_link = process.env.TELEGRAM_BOT_LINK;
-    // const response = await axios.get(telegram_bot_link,{headers:headers});
-    // app.log.info(response);
+    const data = context.issue;
+    const headers = {'authorization':process.env.PASSWORD};
+    const telegram_bot_link = process.env.TELEGRAM_BOT_LINK;
+    await axios.get(telegram_bot_link,{headers:headers});
     await context.github.issues.createComment(issueComment);
     }
   });
@@ -45,8 +43,8 @@ module.exports = (app) => {
       await context.github.issues.createComment(issueComment);
     }
   });
-  
-  
+
+
   const router = app.route('/my-app');
   router.use(require('express').static('public'));
   router.use(require('express').json())
@@ -61,7 +59,6 @@ module.exports = (app) => {
     const repo = issue.repo;
     const title = issue.title;
     const body = issue.body;
-    // const body = issue.body;
     return await github.issues.create({
       owner: owner,
       repo: repo,
@@ -86,7 +83,7 @@ module.exports = (app) => {
   }
 
   const closeIssue = async function (issue, app, issueId) {
-    const github = await app.auth(12536268); // Insert Installation ID here
+    const github = await app.auth(process.env.INSTALLATION_ID); // Insert Installation ID here
     const owner = issue.owner;
     const repo = issue.repo;
     return await github.issues.update({
@@ -127,12 +124,11 @@ module.exports = (app) => {
       ).catch(err => console.log(err))
       app.log.info({body:"Worked"});
 
-    }
-    else{
+    } else {
       res.status(200).send('Invalid Password!');
     }
   });
-  
+
   // To update an existing issue
   router.patch('/Issue/:id/', (req, res) => {
     const password = req.headers.authentication;
@@ -150,9 +146,11 @@ module.exports = (app) => {
         res.send('Success')
       ).catch(err => console.log(err))
       app.log.info({body:"Worked"});
+    } else {
+      res.status(200).send('Invalid Password!');
     }
   });
-  
+
   // To close an existing issue
   router.delete('/Issue/:id/', (req, res) => {
     const password = req.headers.authentication;
@@ -166,6 +164,8 @@ module.exports = (app) => {
         res.send('Success')
       ).catch(err => console.log(err))
       app.log.info({body:"Worked"});
+    } else {
+      res.status(200).send('Invalid Password!');
     }
   });
 };
